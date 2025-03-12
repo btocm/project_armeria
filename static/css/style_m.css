@@ -1,0 +1,91 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'DM Sans', sans-serif;
+    background-color: rgb(222, 236, 239); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+h1 {
+    color: rgb(29, 62, 94); 
+    margin-bottom: 20px;
+    font-family: 'DM Sans', sans-serif;
+}
+
+table {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1200px;
+    border-collapse: separate;
+    border-radius: 2px;
+    background-color: rgb(222, 236, 239); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/*Bordes de la tabla*/
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid rgb(29, 62, 94); 
+    border-radius: 5px;
+}
+
+/*encabezados de la tabla*/
+th {
+    background-color: rgb(25, 76, 108); 
+    color: white;
+}
+
+/*Pares de la columna de la tabla*/
+tr:nth-child(even) {
+    background-color: rgb(191, 210, 218); 
+}
+
+/*Impares de las columnas de la tabla*/
+tr:nth-child(odd) {
+    background-color: rgb(247, 251, 252); 
+}
+
+/*Contenedor de botones*/
+.button-container {
+    margin-top: 20px;
+    text-align: right; 
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*Boton generar reporte*/
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    text-decoration: none;
+    color: white;
+    background-color: rgb(86, 170, 189); 
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: rgb(75, 149, 165); 
+    transform: scale(1.05);
+}
+
+/*Boton de cerrar sesión*/
+.button-cs {
+    background-color: rgb(203, 71, 71); 
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.button-cs:hover {
+    background-color: rgb(137, 47, 47); 
+    transform: scale(1.05);
+}

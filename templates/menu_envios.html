@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../static/img/logoIM117.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Protest+Revolution&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/style_e.css">
+    <title>Gestión de Envíos</title>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="/menu_envios">
+            <img src="../static/img/logoIM117.png" alt="Logo">
+        </a>
+    </nav>
+
+    <div class="container">
+        <h1>Gestión de Envíos</h1>
+
+        <!-- Barra de búsqueda -->
+        <div class="d-flex justify-content-start my-4">
+            <form action="/b_envio" method="POST" class="form-inline me-3 search-form">
+                <label for="searchInput" class="mr-2">Buscar Envío por ID:</label>
+                <input type="text" id="searchInput" name="id" class="form-control" placeholder="🔎 Ingresa el ID" required>
+                <button type="submit" class="btn btn-secondary">Consultar</button>
+            </form>
+        </div>
+
+        <!-- Mostrar mensaje de error si no se encuentra el envío -->
+        {% if mensaje %}
+            <div class="alert alert-danger mt-4">{{ mensaje }}</div>
+        {% endif %}
+
+        <!-- Mostrar los detalles del envío si se encuentra -->
+        {% if envio %}
+        <h3 class="mt-4">Detalles del Envío:</h3>
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre Cliente</th>
+                    <th>Cantidad / Arma</th>
+                    <th>Dirección</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ envio.id }}</td>
+                    <td>{{ envio.nombre_cliente }}</td>
+                    <td>{{ envio.cantidad_arma }}</td>
+                    <td>{{ envio.direccion }}</td>
+                    <td>{{ envio.fecha }}</td>
+                    <td>{{ envio.estado }}</td>
+                </tr>
+            </tbody>
+        </table>
+        {% else %}
+        
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre Cliente</th>
+                    <th>Cantidad / Arma</th>
+                    <th>Dirección</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for envio in envios %}
+                    <tr>
+                        <td>{{ envio.id }}</td>
+                        <td>{{ envio.nombre_cliente }}</td>
+                        <td>{{ envio.cantidad_arma }}</td>
+                        <td>{{ envio.direccion }}</td>
+                        <td>{{ envio.fecha }}</td>
+                        <td>{{ envio.estado }}</td>
+                        <td>
+                            <!-- Formularios para cambiar el estado del envío -->
+                            <form action="/cambiar_estado/{{ envio.id }}" method="POST">
+                                <button type="submit" name="estado" value="Pendiente" class="btn btn-pendiente btn-sm me-2">Pendiente</button>
+                                <button type="submit" name="estado" value="Enviado" class="btn btn-enviado btn-sm me-2">Enviado</button>
+                                <button type="submit" name="estado" value="Entregado" class="btn btn-entregado btn-sm">Entregado</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
+        <!-- Botones de acción -->
+        <div class="button-container mt-4">
+            <a href="#nuevoEnvioModal" class="button-nuevo-envio" data-bs-toggle="modal">Nuevo Envío</a>
+            <form action="/logout" method="POST" style="display: inline;">
+                <button type="submit" class="button-cs">Cerrar Sesión</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Nuevo Envío -->
+    <div class="modal fade" id="nuevoEnvioModal" tabindex="-1" aria-labelledby="nuevoEnvioModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="/nuevo_envio">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="nuevoEnvioModalLabel">Nuevo Envío</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="nombre_cliente" class="form-label">Nombre Cliente</label>
+                            <input type="text" name="nombre_cliente" id="nombre_cliente" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cantidad_arma" class="form-label">Cantidad / Arma</label>
+                            <input type="text" name="cantidad_arma" id="cantidad_arma" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="direccion" class="form-label">Dirección</label>
+                            <input type="text" name="direccion" id="direccion" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="fecha" class="form-label">Fecha</label>
+                            <input type="date" name="fecha" id="fecha" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts de Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+html, body {
+    font-family: 'DM Sans', sans-serif;
+    background-size: cover;
+    background-position: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: rgb(222, 236, 239);
+}
+
+.container {
+    width: 80%;
+    max-width: 600px;
+    margin: auto;
+    text-align: center;
+    padding: 2rem;
+}
+
+h1 {
+    color: rgba(29, 62, 94);
+    font-family: 'DM Sans', sans-serif;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2rem;
+    width: 100%;
+}
+
+label {
+    color: rgba(29, 62, 94);
+    font-weight: bold;
+    text-align: left;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+input[type="date"] {
+    width: 80%;
+    padding: 8px;
+    margin-bottom: 15px;
+    background-color: rgba(191, 210, 218);
+    border: 1px solid rgba(29, 62, 94);
+    border-radius: 5px;
+    color: black;
+}
+
+input[type="date"]:hover {
+    background-color: rgba(25, 76, 57, 0.5);
+}
+
+button {
+    background-color: rgba(86, 170, 189);
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: rgba(75, 149, 165);
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+        padding: 0 15px;
+    }
+
+    input[type="date"] {
+        width: 100%;
+    }
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+}
+
+.navbar img {
+    width: 12%;
+    height: auto;
+    margin-left: 2rem;
+    margin-top: 1rem;
+}

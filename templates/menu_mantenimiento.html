@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../static/img/logoIM117.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Protest+Revolution&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/style_m.css">
+    <title>Lista de Mantenimiento</title>
+</head>
+
+<body>
+    <div>
+        <h1>Lista de Mantenimiento</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre del Arma</th>
+                    <th>Tipo de Servicio</th>
+                    <th>Descripción de la Falla</th>
+                    <th>Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for fila in datos %}
+                <tr>
+                    <td>{{ fila['id'] }}</td>
+                    <td>{{ fila['nombreA'] }}</td>
+                    <td>{{ fila['tipoServicio'] }}</td>
+                    <td>{{ fila['descripcionFalla'] }}</td>
+                    <td>{{ fila['fecha'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="button-container">
+            <a href="/nueva_solicitud" class="button">Generar nuevo reporte</a>
+
+            <!-- Formulario de Cerrar Sesión -->
+            <form action="/logout" method="POST" style="display: inline;">
+                <button type="submit" class="button button-cs">Cerrar Sesión</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

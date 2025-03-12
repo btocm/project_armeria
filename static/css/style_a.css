@@ -1,0 +1,246 @@
+html, body {
+    font-family: 'DM Sans', sans-serif;
+    background-color: rgb(222, 236, 239);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-size: cover;
+    background-position: center;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    text-align: center;
+    padding: 2rem;
+}
+
+h1 {
+    color: rgb(29, 62, 94);
+    margin-bottom: 0px;
+}
+
+table.custom-table {
+    width: 100%;
+    border-collapse: collapse; 
+    background-color: rgb(222, 236, 239);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos de las celdas */
+table.custom-table th, table.custom-table td {
+    padding: 12px 15px;  
+    text-align: left;
+    border: 1px solid rgb(29, 62, 94);
+    border-radius: 5px; 
+}
+
+/* Estilos de los encabezados */
+table.custom-table th {
+    background-color: rgb(25, 76, 108); 
+    color: white;
+    font-weight: bold; 
+}
+
+/* Estilos para las filas impares */
+table.custom-table tr:nth-child(odd) {
+    background-color: rgb(247, 251, 252);
+}
+
+/* Estilos para las filas pares */
+table.custom-table tr:nth-child(even) {
+    background-color: rgb(191, 210, 218);
+}
+
+.button-container {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.button {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    text-decoration: none;
+    color: white;
+    background-color: rgb(86, 170, 189);
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.mr-2{
+    width: 130px;
+}
+
+.button:hover {
+    background-color: rgb(75, 149, 165);
+    transform: scale(1.05);
+}
+
+.button-agg{
+    background-color: green;
+}
+
+.button-agg:hover {
+    background-color: rgb(2, 48, 2);
+    transform: scale(1.05);
+}
+
+.button-cs {
+    background-color: rgb(203, 71, 71);
+    border: none;
+}
+
+.button-cs:hover {
+    background-color: rgb(137, 47, 47);
+    transform: scale(1.05);
+}
+
+.button.button-c {
+    background-color: rgb(203, 71, 71);
+    border: none;
+}
+
+.button.button-c:hover {
+    background-color: rgb(137, 47, 47);
+    transform: scale(1.05);
+}
+
+/* Estilo para el formulario de búsqueda */
+.search-form {
+    display: flex;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.search-form input[type="text"] {
+    padding: 8px;
+    background-color: rgb(191, 210, 218);
+    border: 1px solid rgb(29, 62, 94);
+    border-radius: 5px;
+    margin-right: 10px;
+    width: 180px;
+}
+
+.search-form button {
+    padding: 8px 20px;
+    background-color: rgb(86, 170, 189);
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 110px;
+}
+
+.search-form button:hover {
+    background-color: rgb(75, 149, 165);
+    transform: scale(1.05);
+}
+
+/* Modal centrado */
+.modal-dialog {
+    max-width: 500px;
+    margin: 1.75rem auto;
+}
+
+.modal-content {
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+}
+
+.navbar img {
+    width: 12%;
+    height: auto;
+    margin-left: 2rem;
+}
+
+.modal-body label {
+    color: rgba(29, 62, 94);
+    font-weight: bold;
+    text-align: left;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.modal-body input, .modal-body textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    background-color: rgba(191, 210, 218);
+    border: 1px solid rgba(29, 62, 94);
+    border-radius: 5px;
+}
+
+.modal-footer button {
+    background-color: rgba(86, 170, 189);
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-footer button:hover {
+    background-color: rgba(75, 149, 165);
+    transform: scale(1.05);
+}
+
+.modal-footer{
+    display: flex;
+    justify-content: flex-end; /* Alinea los botones hacia la derecha */
+    gap: 10px;
+}
+
+.btn-activo {
+    background-color: rgb(95, 215, 242); 
+    color: black;
+}
+
+.btn-activo:hover {
+    background-color: rgb(82, 184, 207); 
+    color: black;
+    transform: scale(1.05);
+}
+
+.btn-sinExistencia {
+    background-color: rgb(75, 195, 234); 
+    color: black;
+}
+
+.btn-sinExistencia:hover {
+    background-color: rgb(61, 157, 190); 
+    color: black;
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+        padding: 0 15px;
+    }
+
+    input[type="text"], button {
+        width: 100%;
+    }
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
+    gap: 10px; 
+    margin: 0; 
+    text-align: center;
+}
+
+button.btn {
+    margin: 3px 0; 
+}

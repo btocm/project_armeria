@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../static/img/logoIM117.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Protest+Revolution&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/style_a.css">
+    <title>Gestión de Almacén</title>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="/menu_almacen">
+            <img src="../static/img/logoIM117.png" alt="Logo">
+        </a>
+    </nav>
+
+    <div class="container">
+        <h1>Gestión de Almacén</h1>
+
+        <!-- Barra de búsqueda y botones-->
+        <div class="d-flex justify-content-start my-4">
+            <form action="/b_equipo" method="POST" class="form-inline me-3 search-form">
+                <label for="searchInput" class="mr-2">Buscar Equipo:</label>
+                <input type="text" id="searchInput" name="nombre_arma" class="form-control" placeholder="🔎 Ingresa el Nombre" required>
+                <button type="submit" class="button button-c">Consultar</button>
+            </form>            
+        </div>
+
+        <!-- Mostrar mensaje de error si no se encuentra el equipo -->
+        {% if mensaje %}
+            <div class="alert alert-danger mt-4">{{ mensaje }}</div>
+        {% endif %}
+
+        <!-- Mostrar los detalles del equipo si se encuentra -->
+        {% if arma %}
+        <h3 class="mt-4">Detalles del Equipo:</h3>
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Equipo</th>
+                    <th>Modelo</th>
+                    <th>Número de Serie</th>
+                    <th>Calibre</th>
+                    <th>Sistema de disparo</th>
+                    <th>Materiales</th>
+                    <th>Peso</th>
+                    <th>Costo</th>
+                    <th>Estado</th>
+                    <th></th>
+                    <th>Editar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ arma.nombre_arma }}</td>
+                    <td>{{ arma.modelo }}</td>
+                    <td>{{ arma.numSerie }}</td>
+                    <td>{{ arma.calibre }}</td>
+                    <td>{{ arma.sistemaDisparo }}</td>
+                    <td>{{ arma.materiales }}</td>
+                    <td>{{ arma.peso }}</td>
+                    <td>{{ arma.costo }}</td>
+                    <td>{{ arma.estado }}</td>
+                    <td>
+                        <!-- Formularios para cambiar el estado del envío -->
+                        <form action="/cambiar_estadoA/{{ arma.numSerie }}" method="POST" class="button-group">
+                            <button type="submit" name="estado" value="activo" class="btn btn-activo btn-sm me-2">activo</button>
+                            <button type="submit" name="estado" value="sin existencia" class="btn btn-sinExistencia btn-sm">sin existencia</button>
+                        </form>
+                    </td>
+                    <td><a href="#editarEquipoModal{{ arma.numSerie }}" class="button button-e" data-bs-toggle="modal">📝</a></td>
+                </tr>
+
+                <!-- Modal para Editar Equipo -->
+                <div class="modal fade" id="editarEquipoModal{{ arma.numSerie }}" tabindex="-1" aria-labelledby="editarEquipoModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form method="POST" action="/editar_equipo/{{ arma.numSerie }}">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editarEquipoModalLabel{{ arma.numSerie }}">Editar Equipo</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                </div>
+                                <div class="modal-body">                                            
+                                    <div class="mb-3">
+                                        <label for="nombre_arma{{arma.numSerie}}" class="form-label">Equipo</label>
+                                        <input type="text" name="nombre_arma" id="nombre_arma{{arma.numSerie}}" class="form-control" value="{{arma.nombre_arma}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="modelo{{arma.numSerie}}" class="form-label">Modelo</label>
+                                        <input type="text" name="modelo" id="modelo{{arma.numSerie}}" class="form-control" value="{{arma.modelo}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="numSerie{{arma.numSerie}}" class="form-label">Número de Serie</label>
+                                        <input type="text" name="numSerie" id="numSerie{{arma.numSerie}}" class="form-control" value="{{arma.numSerie}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="calibre{{arma.numSerie}}" class="form-label">Calibre</label>
+                                        <input type="text" name="calibre" id="calibre{{arma.numSerie}}" class="form-control" value="{{arma.calibre}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="sistemaDisparo{{arma.numSerie}}" class="form-label">Sistema de Disparo</label>
+                                        <input type="text" name="sistemaDisparo" id="sistemaDisparo{{arma.numSerie}}" class="form-control" value="{{arma.sistemaDisparo}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="materiales{{arma.numSerie}}" class="form-label">Materiales</label>
+                                        <input type="text" name="materiales" id="materiales{{arma.numSerie}}" class="form-control" value="{{arma.materiales}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="peso{{arma.numSerie}}" class="form-label">Peso</label>
+                                        <input type="text" name="peso" id="peso{{arma.numSerie}}" class="form-control" value="{{arma.peso}}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="costo{{arma.numSerie}}" class="form-label">Costo</label>
+                                        <input type="text" name="costo" id="costo{{arma.numSerie}}" class="form-control" value="{{arma.costo}}">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="button button-guardar">Guardar</button>
+                                    <button type="button" class="button button-c" data-bs-dismiss="modal">Cancelar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </tbody>
+        </table>
+        {% else %}
+        <!-- Si no se encuentra el equipo, mostrar la lista completa -->
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Equipo</th>
+                    <th>Modelo</th>
+                    <th>Número de Serie</th>
+                    <th>Calibre</th>
+                    <th>Sistema de disparo</th>
+                    <th>Materiales</th>
+                    <th>Peso</th>
+                    <th>Costo</th>
+                    <th>Estado</th>
+                    <th></th>
+                    <th>Editar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for arma in armas %}
+                    <tr>
+                        <td>{{ arma.nombre_arma }}</td>
+                        <td>{{ arma.modelo }}</td>
+                        <td>{{ arma.numSerie }}</td>
+                        <td>{{ arma.calibre }}</td>
+                        <td>{{ arma.sistemaDisparo }}</td>
+                        <td>{{ arma.materiales }}</td>
+                        <td>{{ arma.peso }}</td>
+                        <td>{{ arma.costo }}</td>
+                        <td>{{ arma.estado }}</td>
+                        <td>
+                            <!-- Formularios para cambiar el estado del envío -->
+                            <form action="/cambiar_estadoA/{{ arma.numSerie }}" method="POST" class="button-group">
+                                <button type="submit" name="estado" value="activo" class="btn btn-activo btn-sm me-2">activo</button>
+                                <button type="submit" name="estado" value="sin existencia" class="btn btn-sinExistencia btn-sm">sin existencia</button>
+                            </form>
+                        </td>
+                        <td><a href="#editarEquipoModal{{ arma.numSerie }}" class="button button-e" data-bs-toggle="modal">📝</a></td>
+                    </tr>
+
+                    <!-- Modal para Editar Equipo -->
+                    <div class="modal fade" id="editarEquipoModal{{ arma.numSerie }}" tabindex="-1" aria-labelledby="editarEquipoModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form method="POST" action="/editar_equipo/{{ arma.numSerie }}">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editarEquipoModalLabel{{ arma.numSerie }}">Editar Equipo</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                    </div>
+                                    <div class="modal-body">                                            
+                                        <div class="mb-3">
+                                            <label for="nombre_arma{{arma.numSerie}}" class="form-label">Equipo</label>
+                                            <input type="text" name="nombre_arma" id="nombre_arma{{arma.numSerie}}" class="form-control" value="{{arma.nombre_arma}}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="modelo{{arma.numSerie}}" class="form-label">Modelo</label>
+                                            <input type="text" name="modelo" id="modelo{{arma.numSerie}}" class="form-control" value="{{arma.modelo}}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="numSerie{{arma.numSerie}}" class="form-label">Número de Serie</label>
+                                            <input type="text" name="numSerie" id="numSerie{{arma.numSerie}}" class="form-control" value="{{arma.numSerie}}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="calibre{{arma.numSerie}}" class="form-label">Calibre</label>
+                                            <input type="text" name="calibre" id="calibre{{arma.numSerie}}" class="form-control" value="{{arma.calibre}}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="sistemaDisparo{{arma.numSerie}}" class="form-label">Sistema de Disparo</label>
+                                            <input type="text" name="sistemaDisparo" id="sistemaDisparo{{arma.numSerie}}" class="form-control" value="{{arma.sistemaDisparo}}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="materiales{{arma.numSerie}}" class="form-label">Materiales</label>
+                                            <input type="text" name="materiales" id="materiales{{arma.numSerie}}" class="form-control" value="{{arma.materiales}}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="peso{{arma.numSerie}}" class="form-label">Peso</label>
+                                            <input type="text" name="peso" id="peso{{arma.numSerie}}" class="form-control" value="{{arma.peso}}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="costo{{arma.numSerie}}" class="form-label">Costo</label>
+                                            <input type="text" name="costo" id="costo{{arma.numSerie}}" class="form-control" value="{{arma.costo}}">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="button button-guardar">Guardar</button>
+                                        <button type="button" class="button button-c" data-bs-dismiss="modal">Cancelar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
+        <!-- Botones de acción -->
+        <div class="button-container">
+            <a href="#nuevoEquipoModal" class="button button-agg" data-bs-toggle="modal">Agregar</a>
+            
+            <form action="/logout" method="POST" style="display: inline;">
+                <button type="submit" class="button button-cs">Cerrar Sesión</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Agregar Equipo -->
+    <div class="modal fade" id="nuevoEquipoModal" tabindex="-1" aria-labelledby="nuevoEquipoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="/nuevo_equipo" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="nuevoEquipoModalLabel">Nuevo Equipo</h5>
+                        <button type="button" class="button-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="nombre_arma" class="form-label">Equipo</label>
+                            <input type="text" name="nombre_arma" id="nombre_arma" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="modelo" class="form-label">Modelo</label>
+                            <input type="text" name="modelo" id="modelo" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="numSerie" class="form-label">Número de Serie</label>
+                            <input type="text" name="numSerie" id="numSerie" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="calibre" class="form-label">Calibre</label>
+                            <input type="text" name="calibre" id="calibre" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="sistemaDisparo" class="form-label">Sistema de Disparo</label>
+                            <input type="text" name="sistemaDisparo" id="sistemaDisparo" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="materiales" class="form-label">Materiales</label>
+                            <input type="text" name="materiales" id="materiales" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="peso" class="form-label">Peso</label>
+                            <input type="text" name="peso" id="peso" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="costo" class="form-label">Costo</label>
+                            <input type="text" name="costo" id="costo" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="button button-g">Guardar</button>
+                        <button type="button" class="button button-c" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
