@@ -28,7 +28,7 @@ CATALOGO_ERRORES = {
     "19": "Error al escribir en la base de datos (registrar un nuevo envío).",
     "19.1": "Error al actualizar en la base de datos (cambiar estado del envío).",
     "19.2": "Error al consultar en la base de datos (buscar envío).",
-    "20": "No se encontró el envío con el ID especificado."
+    "20": "No se encontró el envío con el ID especificado.",
 }
 
 
@@ -47,20 +47,22 @@ class Logger:
     def _initialize(self):
         logging.basicConfig(
             level=logging.INFO,
-            format='%(asctime)s - $(levelname)s - %(message)s',
-            handlers=[
-                logging.FileHandler(
-                    "im117_log.log", encoding="utf-8")
-            ])
+            format="%(asctime)s - $(levelname)s - %(message)s",
+            handlers=[logging.FileHandler("im117_log.log", encoding="utf-8")],
+        )
 
-    def log_error(self, error: int, pretext: str = None, posttext: str = None):
-        logging.error(f'ErrorIM117_{error}: {
-                      CATALOGO_ERRORES[str(error)]} Detalle: {posttext}')
+    def log_error(self, error: str, pretext: str = None, posttext: str = None):
+        text = f"ErrorIM117_{error}: {CATALOGO_ERRORES[error]} Detalle: {posttext}"
+        logging.error(text)
 
-    def lof_info(self, error: int, pretext: str = None, posttext: str = None):
-        logging.info(f'{pretext}')
+    def log_info(self, error: str = None, pretext: str = None, posttext: str = None):
+        if error is not None:
+            logging.info(f"{pretext} - {CATALOGO_ERRORES[error]}")
+        else:
+            logging.info(f"{pretext}")
 
-    # def get_error_title(self, error):
-    #     for key, value in CATALOGO_ERRORES.items():
-    #         if error == int(key):
-    #             return CATALOGO_ERRORES[key]
+    def log_warning(self, error: str = None, text: str = None):
+        if error is not None:
+            logging.warning(f"ErrorIM117_{error} - {CATALOGO_ERRORES[error]}")
+        else:
+            logging.warning(text)
