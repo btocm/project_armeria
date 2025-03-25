@@ -1,21 +1,11 @@
-import logging
-from flask import render_template, request, redirect, send_file, url_for
+from flask import redirect, render_template, request, send_file, url_for
 from fpdf import FPDF
+
 from db import mysql
+from utils import Logger
 
-# Configuración del sistema de logs
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-)
+log = Logger()
 
-CATALOGO_ERRORES = {
-    "ErrorIM117_00": "Operación exitosa, no hubo errores.",
-    "ErrorIM117_08": "Error al acceder al menú mantenimiento.",
-    "ErrorIM117_09": "Error al renderizar el formulario de nueva solicitud.",
-    "ErrorIM117_10": "Error al generar el reporte de mantenimiento.",
-    "ErrorIM117_11": "Error al generar el archivo PDF."
-}
 
 # Rutas de mantenimiento
 def rutas_mantenimiento(app):
@@ -24,32 +14,32 @@ def rutas_mantenimiento(app):
     @app.route('/menu_mantenimiento')
     def menu_mantenimiento():
         try:
-            logging.info(f"Acceso al menú de mantenimiento - {CATALOGO_ERRORES['ErrorIM117_00']}")
+            log.log_info(pretext="Acceso al menu de mantenimiento", error="00")
             cur = mysql.connection.cursor()
             cur.execute("SELECT * FROM mantenimiento")
             datos = cur.fetchall()
             cur.close()
             return render_template('menu_mantenimiento.html', datos=datos)
         except Exception as e:
-            logging.error(f"ErrorIM117_08: {CATALOGO_ERRORES['ErrorIM117_08']} Detalle: {e}")
-            return render_template('error.html', mensaje=f"ErrorIM117_08: {CATALOGO_ERRORES['ErrorIM117_08']}")
+            log.log_error(error="05", posttext=e)
+            return render_template('error.html')
 
     # Ruta para mostrar el formulario para una nueva solicitud de mantenimiento
     @app.route('/nueva_solicitud')
     def nueva_solicitud():
         try:
-            logging.info(f"Acceso al formulario de nueva solicitud - {CATALOGO_ERRORES['ErrorIM117_00']}")
+            log.log_info(pretext="Acceso al formulario de nueva solicitud", error="00")
             return render_template('reporte_mantenimiento.html')
         except Exception as e:
-            logging.error(f"ErrorIM117_09: {CATALOGO_ERRORES['ErrorIM117_09']} Detalle: {e}")
-            return render_template('error.html', mensaje=f"ErrorIM117_09: {CATALOGO_ERRORES['ErrorIM117_09']}")
+            log.log_error(error="05", posttext=e)
+            return render_template('error.html')
 
     # Ruta para generar un reporte en PDF basado en un rango de fechas
     @app.route('/generar_reporte', methods=['POST'])
     def generar_reporte():
         fecha_inicio = request.form['fecha_inicio']
         fecha_fin = request.form['fecha_fin']
-        logging.info(f"Generando reporte de mantenimiento desde {fecha_inicio} hasta {fecha_fin}")
+        log.log_info(pretext=f"Generando reporte de mantenimiento desde {fecha_inicio} hasta {fecha_fin}")
 
         try:
             # Consulta a la base de datos
@@ -58,10 +48,10 @@ def rutas_mantenimiento(app):
             cur.execute(consulta, (fecha_inicio, fecha_fin))
             registros = cur.fetchall()
             cur.close()
-            logging.info(f"Se encontraron {len(registros)} registros para el rango de fechas proporcionado")
+            log.log_info(pretext=f"Se encontraron {len(registros)} registros para el rango de fechas proporcionado")
         except Exception as e:
-            logging.error(f"ErrorIM117_10: {CATALOGO_ERRORES['ErrorIM117_10']} Detalle: {e}")
-            return render_template('error.html', mensaje=f"ErrorIM117_10: {CATALOGO_ERRORES['ErrorIM117_10']}")
+            log.log_error(error="10", posttext=e)
+            return render_template('error.html')
 
         try:
             # Generar el PDF
@@ -92,13 +82,13 @@ def rutas_mantenimiento(app):
 
             pdf_path = 'reporte_mantenimiento.pdf'
             pdf.output(pdf_path)
-            logging.info(f"PDF generado exitosamente: {pdf_path} - {CATALOGO_ERRORES['ErrorIM117_00']}")
-        
+            log.log_info(pretext=f"PDF generado exitosamente: {pdf_path}", error="00")
+
             # Descargar el archivo PDF
             return send_file(pdf_path, as_attachment=True)
-        
+
         except Exception as e:
-            logging.error(f"ErrorIM117_11: {CATALOGO_ERRORES['ErrorIM117_11']} Detalle: {e}")
-            return render_template('error.html', mensaje=f"ErrorIM117_11: {CATALOGO_ERRORES['ErrorIM117_11']}")
-    
+            log.log_error(error="11", posttext=e)
+            return render_template('error.html')
+
         # return render_template('reporte_mantenimiento.html')

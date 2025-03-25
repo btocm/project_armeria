@@ -92,7 +92,7 @@ def rutas_almacen(app):
             mysql.connection.commit()
             cursor.close()
 
-            log.log_info(f"Equipo actualizado: {arma}, Número de serie: {numSerie}")
+            log.log_info(pretext=f"Equipo actualizado: {arma}, Número de serie: {numSerie}")
             return redirect(url_for('menu_almacen'))
 
         except Exception as e:
