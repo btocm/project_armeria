@@ -70,19 +70,18 @@ create table armas(
       modelo varchar(20) not null,
 	  calibre varchar(12) not null,
       numSerie varchar(10) not null primary key,
-      sistemaDisparo enum('Tiro a tiro', 'Semiautomático', 'Automático'),
       materiales varchar(50) not null,
       peso varchar(10) not null, 
       costo float not null,
       estado enum('activo', 'sin existencia') default 'activo'
 );
 
-insert into armas (nombre_arma, modelo, calibre, numSerie, sistemaDisparo, materiales, peso, costo) values
-      ('Beretta M9', 'M9', '9mm', 'A12345678', 'Semiautomático', 'Acero, polímero', '0.9 kg', 5236.00),
-      ('AK-47', 'AK-47', '7.62x39mm', 'B98765432', 'Semiautomático', 'Acero', '3.5 kg', 9214.00),
-      ('Desert Eagle', 'Mark XIX', '.50 AE', 'D87654321', 'Semiautomático', 'Acero, polímero', '1.9 kg', 6990.00),
-      ('Uzi Mini', 'Mini', '9mm', 'F12345678', 'Automático', 'Polímero, acero', '1.2 kg', 5537.00),
-      ('MP5K', 'MP5K', '9mm', 'G98765432', 'Automático', 'Polímero, acero', '2.5 kg', 5621.00);
+insert into armas (nombre_arma, modelo, calibre, numSerie, sistemaDisparo_id, materiales, peso, costo) values
+      ('Beretta M9', 'M9', '9mm', 'A12345678', 2, 'Acero, polímero', '0.9 kg', 5236.00),
+      ('AK-47', 'AK-47', '7.62x39mm', 'B98765432', 2, 'Acero', '3.5 kg', 9214.00),
+      ('Desert Eagle', 'Mark XIX', '.50 AE', 'D87654321', 2, 'Acero, polímero', '1.9 kg', 6990.00),
+      ('Uzi Mini', 'Mini', '9mm', 'F12345678', 3, 'Polímero, acero', '1.2 kg', 5537.00),
+      ('MP5K', 'MP5K', '9mm', 'G98765432', 3, 'Polímero, acero', '2.5 kg', 5621.00);
 
 select * from armas;
 drop table armas;
@@ -158,5 +157,25 @@ insert into ventas (fecha, numSerie, cantidad, precio_unitario, metodo_pago) val
 select * from ventas;
 drop table ventas;
 
+CREATE TABLE SistemaDisparo (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tipo VARCHAR(50) NOT NULL UNIQUE
+);
+
+-- Insertar tipos de disparo
+INSERT INTO SistemaDisparo (tipo) VALUES
+    ('Tiro a tiro'),
+    ('Semiautomático'),
+    ('Automático'),
+    ('Manual');
 
 
+-- Modificar la tabla armas para usar una clave foránea a SistemaDisparo
+ALTER TABLE armas
+    ADD COLUMN sistemaDisparo_id INT,
+    ADD CONSTRAINT fk_sistemaDisparo FOREIGN KEY (sistemaDisparo_id) REFERENCES SistemaDisparo(id);
+
+-- Eliminar la columna antigua
+ALTER TABLE armas DROP COLUMN sistemaDisparo;
+
+SELECT numSerie, nombre_arma FROM armas;

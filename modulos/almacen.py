@@ -3,6 +3,14 @@ from flask import redirect, render_template, request, url_for
 from db import mysql
 from utils import Logger
 
+from .arma import Arma
+from .arma_builder import (
+    AutomaticoBuilder,
+    ManualBuilder,
+    SemiautomaticoBuilder,
+    TiroATiroBuilder,
+)
+
 log = Logger()
 
 
@@ -15,7 +23,23 @@ def rutas_almacen(app):
         try:
             log.log_info(pretext="Acceso al menu del almacen", error="00")
             cur = mysql.connection.cursor()
-            cur.execute("SELECT * FROM armas")
+            consulta = """
+            SELECT 
+                armas.nombre_arma, 
+                armas.modelo, 
+                armas.numSerie, 
+                armas.calibre, 
+                SistemaDisparo.tipo AS sistemaDisparo, 
+                armas.materiales, 
+                armas.peso, 
+                armas.costo, 
+                armas.estado
+            FROM 
+                armas
+            LEFT JOIN 
+                SistemaDisparo ON armas.sistemaDisparo_id = SistemaDisparo.id
+            """
+            cur.execute(consulta)
             armas = cur.fetchall()
             cur.close()
         except Exception as e:
@@ -50,27 +74,57 @@ def rutas_almacen(app):
     # Ruta para agregar un nuevo equipo
     @app.route('/nuevo_equipo', methods=['POST'])
     def nuevo_equipo():
-        arma = request.form['nombre_arma']
-        modelo = request.form['modelo']
-        calibre = request.form['calibre']
-        numSerie = request.form['numSerie']
-        disparo = request.form['sistemaDisparo']
-        materiales = request.form['materiales']
-        peso = request.form['peso']
-        costo = request.form['costo']
+
+        sistema_disparo = request.form['sistema_disparo'].lower()
+
+        # Seleccionar el constructor adecuado
+        if sistema_disparo == 'tiro a tiro':
+            builder = TiroATiroBuilder()
+        elif sistema_disparo == 'semiautomatico':
+            builder = SemiautomaticoBuilder()
+        elif sistema_disparo == 'automatico':
+            builder = AutomaticoBuilder()
+        elif sistema_disparo == 'manual':
+            builder = ManualBuilder()
+        else:
+            log.log_warning(error="08")
+            return render_template('error.html')
+
+        arma = (
+            builder.set_nombre(request.form['nombre_arma'])
+            .set_modelo(request.form['modelo'])
+            .set_calibre(request.form['calibre'])
+            .set_numSerie(request.form['numSerie'])
+            .set_materiales(request.form['materiales'])
+            .set_peso(request.form['peso'])
+            .set_costo(request.form['costo'])
+            .build()
+        )
 
         log.log_info(pretext="Intento de agregar nuevo equipo: {arma}, Modelo: {modelo}, N.serie: {numSerie}")
         try:
             cur = mysql.connection.cursor()
-            escribir = """INSERT INTO armas (nombre_arma, modelo, calibre, numSerie, sistemaDisparo, materiales, peso, costo) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
-            cur.execute(escribir, (arma, modelo, calibre, numSerie, disparo, materiales, peso, costo))
+            escribir = """INSERT INTO armas (nombre_arma, modelo, calibre, numSerie, sistemaDisparo_id, materiales, peso, costo) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+            cur.execute(
+                escribir,
+                (
+                    arma.get_nombre(),
+                    arma.get_modelo(),
+                    arma.get_calibre(),
+                    arma.get_numSerie(),
+                    arma.get_sistemaDisparo_id(),
+                    arma.get_materiales(),
+                    arma.get_peso(),
+                    arma.get_costo(),
+                ),
+            )
             mysql.connection.commit()
             cur.close()
         except Exception as e:
             log.log_error(error="06.1", posttext=e)
             return render_template('error.html')
 
-        log.log_info(pretext=f"Nuevo equipo agregado: {arma}, Número de serie: {numSerie}")
+        log.log_info(pretext=f"Nuevo equipo agregado: {arma.get_nombre()}, Número de serie: {arma.get_numSerie()}")
         return redirect(url_for('menu_almacen'))
 
     # Ruta para editar equipo
