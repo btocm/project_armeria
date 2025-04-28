@@ -12,6 +12,7 @@ matplotlib.use('Agg')  # Configuración para usar matplotlib sin entorno gráfic
 from sklearn.linear_model import LinearRegression  # Para análisis de regresión lineal
 import io  # Para manejar datos en memoria
 import base64  # Para codificar imágenes en base64
+from .reporte import ReporteFactory
 
 # Configuración del sistema de logs
 logging.basicConfig(
@@ -96,42 +97,9 @@ def rutas_ventas(app):
             return render_template('error.html', mensaje=CATALOGO_ERRORES['ErrorIM117_14'])
 
         try:
-            # Generar un archivo PDF
-            pdf = FPDF()
-            pdf.add_page()
-            pdf.set_font('Arial', 'B', 10)
-            pdf.cell(200, 10, 'Reporte de Ventas', 0, 1, 'C')
-            pdf.ln(10)
+            reporte = ReporteFactory.crear_reporte("ventas")
+            pdf = reporte.generar(registros)
 
-            # Agregar encabezados en la tabla 
-            pdf.set_font('Arial', 'B', 10)
-            pdf.cell(10, 12, 'ID', 1, 0, 'C')
-            pdf.cell(20, 12, 'Fecha', 1, 0, 'C')
-            pdf.cell(25, 12, 'Num Serie', 1, 0, 'C')
-            pdf.cell(20, 12, 'Cantidad', 1, 0, 'C')
-            pdf.cell(27, 12, 'Precio Unitario', 1, 0, 'C')
-            pdf.cell(20, 12, 'Total', 1, 0, 'C')
-            pdf.cell(32, 12, 'Metodo Pago', 1, 0, 'C')
-            pdf.ln()
-
-            # Agregar datos de las ventas al PDF
-            pdf.set_font('Arial', '', 8)
-            for registro in registros:
-                pdf.cell(10, 12, str(registro['id_venta']), 1, 0, 'C')
-                pdf.cell(20, 12, registro['fecha'].strftime('%Y-%m-%d') if registro['fecha'] else 'N/A', 1, 0, 'C')
-                pdf.cell(25, 12, registro['numSerie'] if registro['numSerie'] else 'N/A', 1, 0, 'C')
-                pdf.cell(20, 12, str(registro['cantidad']), 1, 0, 'C')
-                pdf.cell(27, 12, str(registro['precio_unitario']), 1, 0, 'C')
-                pdf.cell(20, 12, str(registro['total']), 1, 0, 'C')
-                pdf.cell(32, 12, registro['metodo_pago'] if registro['metodo_pago'] else 'N/A', 1, 0, 'C')
-                pdf.ln()
-            
-            # Agregar el total de ventas
-            pdf.ln(10)
-            pdf.set_font('Arial', 'B', 10)
-            pdf.cell(200, 12, f'Total de Ventas: ${total_ventas:.2f}', 0, 1, 'C')
-
-            # Guardar PDF temporalmente
             pdf_path = 'reporte_ventas.pdf'
             pdf.output(pdf_path)
             logging.info(f"PDF generado exitosamente: {pdf_path} - {CATALOGO_ERRORES['ErrorIM117_00']}")

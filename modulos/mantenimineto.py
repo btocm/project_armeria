@@ -4,6 +4,8 @@ from fpdf import FPDF
 from db import mysql
 from utils import Logger
 
+from .reporte import ReporteFactory
+
 log = Logger()
 
 
@@ -54,31 +56,8 @@ def rutas_mantenimiento(app):
             return render_template('error.html')
 
         try:
-            # Generar el PDF
-            pdf = FPDF()
-            pdf.add_page()
-            pdf.set_font('Arial', 'B', 10)
-            pdf.cell(200, 10, 'Reporte de Mantenimiento', 0, 1, 'C')
-            pdf.ln(10)
-
-            # Agregar encabezados
-            pdf.set_font('Arial', 'B', 10)
-            pdf.cell(10, 10, 'ID', 1)
-            pdf.cell(26, 10, 'Nombre Arma', 1)
-            pdf.cell(35, 10, 'Tipo Servicio', 1)
-            pdf.cell(85, 10, 'Descripcion Falla', 1)
-            pdf.cell(20, 10, 'Fecha', 1)
-            pdf.ln()
-
-            # Agregar datos
-            pdf.set_font('Arial', '', 8)
-            for registro in registros:
-                pdf.cell(10, 10, str(registro['id']), 1)
-                pdf.cell(26, 10, registro['nombreA'] if registro['nombreA'] else 'N/A', 1)
-                pdf.cell(35, 10, registro['tipoServicio'] if registro['tipoServicio'] else 'N/A', 1)
-                pdf.cell(85, 10, registro['descripcionFalla'] if registro['descripcionFalla'] else 'N/A', 1)
-                pdf.cell(20, 10, registro['fecha'].strftime('%Y-%m-%d') if registro['fecha'] else 'N/A', 1)
-                pdf.ln()
+            reporte = ReporteFactory.crear_reporte("mantenimiento")
+            pdf = reporte.generar(registros)
 
             pdf_path = 'reporte_mantenimiento.pdf'
             pdf.output(pdf_path)
